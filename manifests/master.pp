@@ -89,11 +89,12 @@ class puppet::master (
 ) inherits puppet::params {
 
   include concat::setup
-
+  
+  # Quick hack to remove puppet cycling ownership of files
   File {
     require => Package[$puppet_master_package],
-    owner   => 'puppet',
-    group   => 'puppet',
+    # owner   => 'puppet',
+    # group   => 'puppet',
   }
 
   if $storeconfigs {

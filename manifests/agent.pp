@@ -11,7 +11,7 @@
 # Sample Usage:
 #
 class puppet::agent(
-  $puppet_server,
+  $puppet_server = $::puppet::params::puppet_server,
   $puppet_defaults = $::puppet::params::puppet_defaults,
   $puppet_agent_service = $::puppet::params::puppet_agent_service,
   $puppet_agent_name = $::puppet::params::puppet_agent_name,

@@ -96,6 +96,7 @@ class puppet (
   $puppet_master_service    = $puppet::params::puppet_master_service,
   $puppet_agent_service     = $puppet::params::puppet_agent_service,
   $puppet_server            = $puppet::params::puppet_server,
+  $environment              = $puppet::params::environment,
   $puppet_passenger         = false,
   $puppet_site              = $puppet::params::puppet_site,
   $puppet_passenger_port    = $puppet::params::puppet_passenger_port,
@@ -124,9 +125,11 @@ class puppet (
   $dashboard_port           = undef,
   $dashboard_passenger      = undef,
   $dashboard_mysql_provider = undef,
-  $dashboard_mysql_pkg      = undef
+  $dashboard_mysql_pkg      = undef,
+  $paternalistic            = true,
 
 ) inherits puppet::params {
+  
 
   include concat::setup
 
@@ -172,51 +175,28 @@ class puppet (
       puppet_master_package     => $puppet_master_package,
       package_provider          => $package_provider,
       dashboard_port            => $dashboard_port,
+      paternalistic             => $paternalistic,
+      user_id                   => $user_id,
+      group_id                  => $group_id,  
     }
   }
 
   if $agent {
     class {'puppet::agent':
       version                   => $version,
-      certname                  => $certname,
       puppet_defaults           => $puppet_defaults,
       puppet_agent_service      => $puppet_agent_service,
       puppet_server             => $puppet_server,
+      environment               => $environment,
       puppet_conf               => $puppet_conf,
       puppet_agent_name         => $puppet_agent_name,
       package_provider          => $package_provider,
       reporting                 => $reporting,
+      user_id                   => $user_id,
+      group_id                  => $group_id,  
     }
   }
 
-  user { 'puppet':
-    ensure => present,
-    uid    => $user_id,
-    gid    => 'puppet',
-  }
-
-  group { 'puppet':
-    ensure => present,
-    gid    => $group_id,
-  }
-
-  file { $confdir:
-    ensure       => directory,
-    group        => 'puppet',
-    owner        => 'puppet',
-    recurse      => true,
-    recurselimit => '1',
-  }
-
-  concat { $puppet_conf:
-    mode    => '0644',
-  }
-
-  concat::fragment { 'puppet.conf-common':
-    order   => '00',
-    target  => $puppet_conf,
-    content => template("puppet/puppet.conf-common.erb"),
-  }
 
 }
 

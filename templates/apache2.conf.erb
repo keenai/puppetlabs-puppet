@@ -1,27 +1,10 @@
-<%- if @osfamily != 'Debian' %>
-LoadModule ssl_module modules/mod_ssl.so
-<%- end %>
 
-Listen <%= puppet_passenger_port %>
-
-<VirtualHost <%= vhost_name %>:<%= port %>>
-	ServerName <%= srvname %>
-	SSLEngine on
 	SSLProtocol -ALL +SSLv3 +TLSv1
 	SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:-LOW:-SSLv2:-EXP
-
-	SSLCertificateFile      <%= puppet_ssldir %>/certs/<%= certname %>.pem
-	SSLCertificateKeyFile   <%= puppet_ssldir %>/private_keys/<%= certname %>.pem
-	SSLCertificateChainFile <%= puppet_ssldir %>/certs/ca.pem
-	SSLCACertificateFile    <%= puppet_ssldir %>/certs/ca.pem
-	# If Apache complains about invalid signatures on the CRL, you can try disabling
-	# CRL checking by commenting the next line, but this is not recommended.
-	SSLCARevocationFile     <%= puppet_ssldir %>/crl.pem
 	SSLVerifyClient optional
 	SSLVerifyDepth  1
 	SSLOptions +StdEnvVars
 
-	DocumentRoot <%= docroot %>
 	RackBaseURI /
 	<Directory <%= confdir %>/rack/>
 		Options None
@@ -29,4 +12,3 @@ Listen <%= puppet_passenger_port %>
 		Order allow,deny
 		allow from all
 	</Directory>
-</VirtualHost>

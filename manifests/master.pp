@@ -88,7 +88,7 @@ class puppet::master (
   $version                 = 'present',
   $paternalistic           = true,
   $user_id                 = undef,
-  $group_id                = undef,) inherits puppet::agent {
+  $group_id                = undef,) inherits puppet::params {
   include concat::setup
   
   # Quick hack to remove puppet cycling ownership of files
